@@ -1,0 +1,36 @@
+{
+    "name": "copy",
+    "version": "1.0",
+    "description": "damai buy ticket",
+    "permissions": ["notifications", "activeTab",
+                "webRequest", "webRequestBlocking",
+            "*://*/*", "tabs",
+            "cookies"],
+    "browser_action": {  
+
+      "default_icon": "icon.gif" ,
+
+      "default_title": "damai"
+
+    },
+    "content_scripts":[
+        {
+            "matches": ["*://piao.damai.cn/*"],
+            "js":["insert.js"]            
+        },
+        {
+            "matches": ["*://www.228.com.cn/*"],
+            "js":["yongle.js"]            
+        },
+        {
+            "matches": ["*://h5.dianping.com/*"],
+            "js":["dianping.js"]            
+        },
+        {
+            "matches": ["*://m.damai.cn/*"],
+            "js":["damai2.js"]            
+        }
+    ],
+
+    "manifest_version": 2
+}

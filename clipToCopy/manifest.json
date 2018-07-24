@@ -1,0 +1,51 @@
+{
+    "name": "shily copy",
+    "version": "1.0",
+    "description": "not damai",
+    "permissions": ["notifications", "activeTab",
+                "webRequest", "webRequestBlocking",
+            "*://*/*", "tabs",
+            "cookies"],
+	"background": {
+		"scripts": ["background.js"]
+	},
+    "browser_action": {  
+
+      "default_icon": "icon.gif" ,
+
+      "default_title": "clipToCopy"
+
+    },
+    "content_scripts":[
+        {
+            "matches": ["*://www.javbus.cc/*", "*://www.javbus6.pw/*"],
+            "js":["insert.js"]            
+        },
+        {
+            "matches": ["*://thz2.com/*", "*://taohuabt.cc/*", "*://thznb.com/*", "*://thz4.com/*"],
+            "js":["deleteAD.js"]            
+        },
+        {
+            "matches": ["*://www.yybqp.com/*"],
+            "js":["reply.js"]   
+        },
+        {
+            "matches": ["*://www.lagou.com/*"],
+            "js":["lagou.js"]   
+        },
+        {
+            "matches": ["*://www.btbtdy.com/*"],
+            "js":["btdy.js"]   
+        },
+		{
+			"matches": ["*://cr.duowan.com/*"],
+            "js":["crDuowan.js"]   
+		},
+		{
+			"matches": ["*://manhua.fzdm.com/*"],
+            "js":["manhua.js"]   
+		}
+    ],
+
+    "manifest_version": 2
+}

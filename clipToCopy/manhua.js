@@ -150,15 +150,41 @@ function calcMaxLevel(level, card) {
 	}
 	return level;
 }
+
+var getPage = function(url)
+{
+    var urlList = url.split('/');
+    //console.log(urlList[urlList.length - 1]);
+    page = urlList[urlList.length - 1];
+    page = /\d+/.exec(page);
+    if (page)
+    {
+        page = page[0];
+    }
+    else
+        page = "0";
+    hua = urlList[urlList.length - 2];
+    return {"hua":hua, "page":page};
+}
+
 function damaiOrder() {
 	var mh0 = document.getElementById('mhpic');
-	console.log(mh0.src);
+	//console.log('hello', mh0.src);
+    var curUrl = window.location.href;
+    var pageInfo = this.getPage(curUrl);
+    //console.log(pageInfo);
+    
+    var navi = this.getElementByAttr('div', 'class', 'navigation');
+    //console.log(navi);
 	if (!this.isDownload)
 	{
-		chrome.runtime.sendMessage({greeting: mh0.src}, function(response) {
+		chrome.runtime.sendMessage({greeting: mh0.src, 'pageInfo':pageInfo}, function(response) {
 			console.log('收到来自后台的回复：' + response);
 		});
 		this.isDownload = true;
+        console.log(navi.childNodes);
+        var lastNode = navi.childNodes[navi.childNodes.length - 1];
+        lastNode.click();
 	}
 }
 
@@ -216,6 +242,7 @@ Insert.prototype.getChoice = getChoice;
 Insert.prototype.findChilds = findChilds;
 Insert.prototype.damaiOrder = damaiOrder;
 Insert.prototype.calcMaxLevel = calcMaxLevel;
+Insert.prototype.getPage = getPage;
 
 var insert = new Insert();
 insert.setTimer();

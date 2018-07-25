@@ -13,8 +13,9 @@
 
       "default_icon": "icon.gif" ,
 
-      "default_title": "clipToCopy"
+      "default_title": "clipToCopy",
 
+	  "default_popup": "popup.html"
     },
     "content_scripts":[
         {

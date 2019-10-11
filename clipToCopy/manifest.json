@@ -53,7 +53,15 @@
 		{
 			"matches": ["*://www.d21b.com/*"],
             "js":["removeAd.js"]   
-		}
+		},
+		{
+			"matches": ["*://www.tapd.cn/*"],
+            "js":["tapd.js"]   
+		},
+		{
+			"matches": ["*://free-ss.site/*", "*://free-ss.co/*"],
+            "js":["free.js"]   
+		}  
     ],
 
     "manifest_version": 2

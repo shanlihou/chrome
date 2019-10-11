@@ -1,15 +1,6 @@
 function Insert(){
-    this.buttonAdd = false;
-    this.inputAdd = false;
-    this.urlAdd = false;
-    this.isReply = false;
-	this.isOrder = false;
-	this.isTicket = false;
-	this.isStart = true;
-	this.isAddChoice = false;
-	this.isModifyLevel = false;
-	this.isDownload = false;
     this.isAddListener = false;
+    this.isFirst = false;
 }
 function getElementByAttr(tag, attr, value){
     var elements = document.getElementsByTagName(tag);
@@ -34,11 +25,14 @@ function getElementByAttrAll(tag, attr, value){
     return retArray;
 }
 function findChilds(father, tag, attr, value){
+    if (!father)
+        return null;
+    
 	if (father.childNodes != null) {
 		for (var i = 0; i < father.childNodes.length; i++) {
 			if (father.childNodes[i].nodeName == tag) {
-				father.childNodes[i].attributes[attr] == value;
-				return father.childNodes[i];
+				if (father.childNodes[i].attributes[attr].value == value)
+                    return father.childNodes[i];
 			} else {
 				var result = findChilds(father.childNodes[i], tag, attr, value);
 				if (result != null) {
@@ -168,6 +162,73 @@ var getPage = function(url)
     return {"hua":hua, "page":page};
 }
 
+function getCurCode(){
+    var codeSp = this.getElementByAttr('span', 'style', 'color:#CC0000;');
+    if (codeSp)
+        return codeSp.innerHTML.toLowerCase();
+    else
+        return null;
+    /*
+    var codeDiv = document.getElementById('video_id');
+    var codeTd = this.findChilds(codeDiv, 'TD', 'class', 'text');
+    if (codeTd)
+        return codeTd.innerHTML.toLowerCase();
+    else
+        return null;*/
+}
+
+function getUrlCode(){
+    var curUrl = window.location.href;
+    var index = curUrl.indexOf('search/');
+    if (index == -1)
+        return null;
+    
+    index += 7
+    var end = curUrl.indexOf('&', index);
+    var code = curUrl.substring(index, end);
+    return code;
+}
+
+function getActor(){
+    var actorSp = this.getElementByAttr('span', 'class', 'starfav');
+    if (!actorSp)
+        return null;
+    
+    var aa = actorSp.parentNode.childNodes[1].childNodes[1].innerHTML;
+    return aa;
+    /*
+    var actor = document.getElementById('video_cast');
+    var aa = this.findChilds(actor, 'A', 'rel', 'tag');
+    if (aa)
+        return aa.innerHTML;
+    return null;*/
+}
+
+function getMovie(){
+    var movie = this.getElementByAttr('a', 'class', 'movie-box');
+    return movie;
+}
+
+function enterCode(code){
+    var codeInput = document.getElementById('search-input');
+    codeInput.value = code;
+    //var bnSearch = document.getElementById('idsearchbutton');
+    var bnSearch = this.getElementByAttr('button', 'type', 'submit');
+    bnSearch.click();
+}
+
+function isFailed(){
+    var elements = document.getElementsByTagName('h4');
+    for (var i = 0; i < elements.length; i++){
+        if (elements[i].innerText == '沒有您要的結果！')
+        {
+            console.log(elements[i].innerText);
+            return true;
+        }
+    }
+    return false;
+}
+
 var addListener = function()
 {
     if (this.isAddListener)
@@ -178,6 +239,44 @@ var addListener = function()
     chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
     {
         // console.log(sender.tab ?"from a content script:" + sender.tab.url :"from the extension");
+        console.log(that.isFirst);
+        if (that.isFirst)
+            return
+        
+        that.isFirst = true;
+        code = request.code.toLowerCase();
+        var cur = that.getCurCode();
+        console.log(cur, code);
+        if (cur == code)
+        {
+            var actor = that.getActor();
+            sendResponse(code + '=' + actor);
+            that.isFirst = false;
+            return;
+        }
+        
+        var urlCode = that.getUrlCode();
+        console.log(urlCode);
+        if (urlCode == code)
+        {
+            var movie = that.getMovie();
+            if (movie)
+            {
+                movie.click();
+            }
+            else
+            {
+                if (that.isFailed())
+                {
+                    sendResponse(code + '=' + 'no');
+                    that.isFirst = false;
+                }
+            }
+            return;
+        }
+        
+        that.enterCode(code);
+        /*
         if(request.cmd == 'test')
             console.log(request.value);
         sendResponse('我收到了你的消息！');
@@ -190,58 +289,18 @@ var addListener = function()
         else if (request.value == 'failed')
         {
             that.isDownload = false;
-        }
+        }*/
     });    
 }
 
 function damaiOrder() {
     this.addListener();
-	var mh0 = document.getElementById('mhpic');
-    var curUrl = window.location.href;
-    var pageInfo = this.getPage(curUrl);
-	if (!this.isDownload)
-	{
-		chrome.runtime.sendMessage({greeting: mh0.src, 'pageInfo':pageInfo}, function(response) {
-			console.log('收到来自后台的回复：' + response);
-            console.log(response);
-		});
-		this.isDownload = true;
-	}
 }
 
 function timerFunc(){
     var that = this;
     var tmpFunc = function(){
 		that.damaiOrder();
-        /*
-        if (!that.inputAdd)
-        {
-            var divs = that.getElementByAttrAll('div', 'class', 'input-group');
-            var input = document.createElement('input');
-            input.type = 'text';
-            that.input = input;
-            divs[0].appendChild(input);
-            console.log(divs);
-            that.inputAdd = true;
-        }
-        //aLink[0].childNodes[1].href = '';
-        //aLink[0].childNodes[1].onclick = function(){console.log('123')};
-        //console.log(aLink[0].childNodes[1].href);
-        if (!that.urlAdd)
-        {
-            var btns = that.getUrl();
-            if (btns.length)
-            {
-                that.urlAdd = true;
-                var father = document.getElementById('magnet-table');
-                for (var i = 0; i < btns.length; i++)
-                {
-                    father.appendChild(btns[i]); 
-                }
-            }
-        }*/
-        //console.log(father);
-        //console.log("im here");
     }
     return tmpFunc;
 }
@@ -265,5 +324,11 @@ Insert.prototype.damaiOrder = damaiOrder;
 Insert.prototype.calcMaxLevel = calcMaxLevel;
 Insert.prototype.getPage = getPage;
 Insert.prototype.addListener = addListener;
+Insert.prototype.getCurCode = getCurCode;
+Insert.prototype.getActor = getActor;
+Insert.prototype.enterCode = enterCode;
+Insert.prototype.getUrlCode = getUrlCode;
+Insert.prototype.getMovie = getMovie;
+Insert.prototype.isFailed = isFailed;
 var insert = new Insert();
 insert.setTimer();

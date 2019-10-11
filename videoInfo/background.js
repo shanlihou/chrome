@@ -2,7 +2,7 @@ console.log('hello');
 
 function sendMessageToContentScript(message, callback)
 {
-    chrome.tabs.query({url: "*://manhua.fzdm.com/*"}, function(tabs)
+    chrome.tabs.query({url: "*://www.buscdn.pw/*"}, function(tabs)
     {
         chrome.tabs.sendMessage(tabs[0].id, message, function(response)
         {
@@ -51,18 +51,16 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
     sendResponse('我是后台，我已收到你的消息：' + JSON.stringify(request));
 });
 
-function testDjango()
-{
-    var url = 'path=1234';
-    var xhrUrl = "http://127.0.0.1:8000/download/";
+function sendActor(actor){
+    var data = 'cmd=sendActor&';
+    data += 'Actor=' + actor;
+    var xhrUrl = "http://127.0.0.1:8000/videoInfo/";
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function(){
         if (xhr.readyState==4)
         {// 4 = "loaded"
             if (xhr.status==200)
             {// 200 = "OK"
-                console.log(xhr.responseText); 
-                sendResponse(xhr.responseText);
             }
             else
             {
@@ -71,6 +69,58 @@ function testDjango()
         }
     }; // Implemented elsewhere.
     xhr.open("POST", xhrUrl, true);
-    xhr.send(url);
+    xhr.send(data);    
+}
+
+function getCode()
+{
+    var xhrUrl = "http://127.0.0.1:8000/videoInfo/";
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(){
+        if (xhr.readyState==4)
+        {// 4 = "loaded"
+            if (xhr.status==200)
+            {// 200 = "OK"
+                ret = xhr.responseText;
+                if (ret == 'stop' || ret == 'failed')
+                    return;
+                
+                console.log(xhr.responseText);
+                sendMessageToContentScript({code:xhr.responseText}, function(resp){
+                    console.log(resp);
+                    if (resp)
+                        sendActor(resp);
+                });
+            }
+            else
+            {
+                console.log('failed');
+            }
+        }
+    }; // Implemented elsewhere.
+    xhr.open("POST", xhrUrl, true);
+    xhr.send('cmd=getCode');
     
 };
+
+function Insert(){
+}
+function run(){
+    this.getCode();
+}
+function timerFunc(){
+    var that = this;
+    var tmpFunc = function(){
+        that.run();
+    }
+    return tmpFunc;
+}
+function setTimer(){
+    this.timer = setInterval(this.timerFunc(), 1000 * 1);
+}
+Insert.prototype.setTimer = setTimer;
+Insert.prototype.timerFunc = timerFunc;
+Insert.prototype.run = run;
+Insert.prototype.getCode = getCode;
+var insert = new Insert();
+insert.setTimer();

@@ -13,8 +13,9 @@
 
       "default_icon": "icon.gif" ,
 
-      "default_title": "clipToCopy"
+      "default_title": "clipToCopy",
 
+	  "default_popup": "popup.html"
     },
     "content_scripts":[
         {
@@ -22,7 +23,7 @@
             "js":["insert.js"]            
         },
         {
-            "matches": ["*://thz2.com/*", "*://taohuabt.cc/*", "*://thznb.com/*", "*://thz4.com/*"],
+            "matches": ["*://thz2.com/*", "*://taohuabt.cc/*", "*://thznb.com/*", "*://thz6.com/*", "*://thzu.net/*", "*://thzvv.net/*"],
             "js":["deleteAD.js"]            
         },
         {
@@ -44,6 +45,14 @@
 		{
 			"matches": ["*://manhua.fzdm.com/*"],
             "js":["manhua.js"]   
+		},
+		{
+			"matches": ["*://page2.dfpan.com/*", "*://page5.dfpan.com/*"],
+            "js":["yunfile.js"]   
+		},
+		{
+			"matches": ["*://www.d21b.com/*"],
+            "js":["removeAd.js"]   
 		}
     ],
 

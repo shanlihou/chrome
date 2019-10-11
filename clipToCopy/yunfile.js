@@ -195,18 +195,13 @@ var addListener = function()
 }
 
 function damaiOrder() {
-    this.addListener();
-	var mh0 = document.getElementById('mhpic');
-    var curUrl = window.location.href;
-    var pageInfo = this.getPage(curUrl);
+	var down = document.getElementById("downbtn");
 	if (!this.isDownload)
 	{
-		chrome.runtime.sendMessage({greeting: mh0.src, 'pageInfo':pageInfo}, function(response) {
-			console.log('收到来自后台的回复：' + response);
-            console.log(response);
-		});
+		down.click();
 		this.isDownload = true;
 	}
+	
 }
 
 function timerFunc(){

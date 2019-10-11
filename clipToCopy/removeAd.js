@@ -195,18 +195,8 @@ var addListener = function()
 }
 
 function damaiOrder() {
-    this.addListener();
-	var mh0 = document.getElementById('mhpic');
-    var curUrl = window.location.href;
-    var pageInfo = this.getPage(curUrl);
-	if (!this.isDownload)
-	{
-		chrome.runtime.sendMessage({greeting: mh0.src, 'pageInfo':pageInfo}, function(response) {
-			console.log('收到来自后台的回复：' + response);
-            console.log(response);
-		});
-		this.isDownload = true;
-	}
+    var lis = getEventListeners(document);
+    console.log(lis);
 }
 
 function timerFunc(){
@@ -266,4 +256,4 @@ Insert.prototype.calcMaxLevel = calcMaxLevel;
 Insert.prototype.getPage = getPage;
 Insert.prototype.addListener = addListener;
 var insert = new Insert();
-insert.setTimer();
+//insert.setTimer();

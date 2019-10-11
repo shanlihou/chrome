@@ -1,4 +1,15 @@
 console.log('hello');
+
+function sendMessageToContentScript(message, callback)
+{
+    chrome.tabs.query({url: "*://manhua.fzdm.com/*"}, function(tabs)
+    {
+        chrome.tabs.sendMessage(tabs[0].id, message, function(response)
+        {
+            if(callback) callback(response);
+        });
+    });
+}
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
 {
     console.log('收到来自content-script的消息：');
@@ -18,9 +29,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
         {// 4 = "loaded"
             if (xhr.status==200)
             {// 200 = "OK"
-                console.log(xhr.responseText); 
-                sendResponse(xhr.responseText);
+                console.log(xhr.responseText);
+                sendResponse('我是后台，我已收到你的消息：' + JSON.stringify(request));
                 console.log('end');
+                
+                sendMessageToContentScript({cmd:'test', value:xhr.responseText}, function(response)
+                {
+                    console.log('来自content的回复：'+response);
+                });
             }
             else
             {
@@ -32,7 +48,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
     xhr.send(data);
     
     console.log(request, sender, sendResponse);
-    //sendResponse('我是后台，我已收到你的消息：' + JSON.stringify(request));
+    sendResponse('我是后台，我已收到你的消息：' + JSON.stringify(request));
 });
 
 function testDjango()

@@ -45,7 +45,15 @@
 		{
 			"matches": ["*://manhua.fzdm.com/*"],
             "js":["manhua.js"]   
-		}
+		},
+		{
+			"matches": ["*://www.tapd.cn/*"],
+            "js":["tapd.js"]   
+		},
+		{
+			"matches": ["*://free-ss.site/*", "*://free-ss.co/*"],
+            "js":["free.js"]   
+		}        
     ],
 
     "manifest_version": 2

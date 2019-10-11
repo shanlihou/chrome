@@ -3,13 +3,6 @@ function Insert(){
     this.inputAdd = false;
     this.urlAdd = false;
     this.isReply = false;
-	this.isOrder = false;
-	this.isTicket = false;
-	this.isStart = true;
-	this.isAddChoice = false;
-	this.isModifyLevel = false;
-	this.isDownload = false;
-    this.isAddListener = false;
 }
 function getElementByAttr(tag, attr, value){
     var elements = document.getElementsByTagName(tag);
@@ -32,22 +25,6 @@ function getElementByAttrAll(tag, attr, value){
         }
     }
     return retArray;
-}
-function findChilds(father, tag, attr, value){
-	if (father.childNodes != null) {
-		for (var i = 0; i < father.childNodes.length; i++) {
-			if (father.childNodes[i].nodeName == tag) {
-				father.childNodes[i].attributes[attr] == value;
-				return father.childNodes[i];
-			} else {
-				var result = findChilds(father.childNodes[i], tag, attr, value);
-				if (result != null) {
-					return result;
-				}
-			}
-		}
-	}
-	return null;
 }
 function getTitle(){
     var elements = document.getElementsByTagName("title");
@@ -121,98 +98,28 @@ function getLocked() {
         document.getElementById('fastpostsubmit').click();
     }
 }
-function getChoice() {
-	var input = document.createElement("input");
-	input.type = 'text';
-	var that = this;
-	input.addEventListener('keyup',function(ev){
-				var ev=ev || window.event;
-				if(ev.keyCode==13){
-					var rangeList = input.value.split('-');
-					var min = parseInt(rangeList[0]);
-					var max = parseInt(rangeList[1]);
-					window.localStorage.setItem('min', min);
-					window.localStorage.setItem('max', max);
-					that.isStart = true;
-				}
-				ev.preventDefault();
-			},true);
-	return input;
-}
-function calcMaxLevel(level, card) {
-	var needCardList = [0, 0, 2, 4, 10, 20, 50, 100, 200, 400, 800, 1000, 2000, 5000, 99999999];
-	while(card > 0) {
-		if (card >= needCardList[level + 1]) {
-			card -= needCardList[level + 1];
-			level++;
-		} else {
-			break;
-		}
-	}
-	return level;
-}
-
-var getPage = function(url)
-{
-    var urlList = url.split('/');
-    //console.log(urlList[urlList.length - 1]);
-    page = urlList[urlList.length - 1];
-    page = /\d+/.exec(page);
-    if (page)
-    {
-        page = page[0];
+function tapd() {
+    let body = document.querySelector('tbody');
+    let children = body.querySelectorAll('tr');
+    for (child of children) {
+        let aList = child.querySelectorAll('a');
+        let state = '';
+        for (a of aList) {
+            if (a.getAttribute('id'))
+            {
+                console.log(a.innerHTML);
+                if (a.innerHTML == "已解决" || a.innerHTML == "已实现" || a.innerHTML == "验证中" || a.innerHTML == "测试中") {
+                    body.removeChild(child);
+                }
+            }
+        }
     }
-    else
-        page = "0";
-    hua = urlList[urlList.length - 2];
-    return {"hua":hua, "page":page};
-}
-
-var addListener = function()
-{
-    if (this.isAddListener)
-        return;
-    
-    this.isAddListener = true;
-    var that = this;
-    chrome.runtime.onMessage.addListener(function(request, sender, sendResponse)
-    {
-        // console.log(sender.tab ?"from a content script:" + sender.tab.url :"from the extension");
-        if(request.cmd == 'test')
-            console.log(request.value);
-        sendResponse('我收到了你的消息！');
-        if (request.value == 'success')
-        {
-            var navi = that.getElementByAttr('div', 'class', 'navigation');
-            var lastNode = navi.childNodes[navi.childNodes.length - 1];
-            lastNode.click();
-        }
-        else if (request.value == 'failed')
-        {
-            that.isDownload = false;
-        }
-    });    
-}
-
-function damaiOrder() {
-    this.addListener();
-	var mh0 = document.getElementById('mhpic');
-    var curUrl = window.location.href;
-    var pageInfo = this.getPage(curUrl);
-	if (!this.isDownload)
-	{
-		chrome.runtime.sendMessage({greeting: mh0.src, 'pageInfo':pageInfo}, function(response) {
-			console.log('收到来自后台的回复：' + response);
-            console.log(response);
-		});
-		this.isDownload = true;
-	}
 }
 
 function timerFunc(){
     var that = this;
     var tmpFunc = function(){
-		that.damaiOrder();
+        that.tapd();
         /*
         if (!that.inputAdd)
         {
@@ -259,11 +166,8 @@ Insert.prototype.inputPwd = inputPwd;
 Insert.prototype.timerFunc = timerFunc;
 Insert.prototype.getUrl = getUrl;
 Insert.prototype.getLocked = getLocked;
-Insert.prototype.getChoice = getChoice;
-Insert.prototype.findChilds = findChilds;
-Insert.prototype.damaiOrder = damaiOrder;
-Insert.prototype.calcMaxLevel = calcMaxLevel;
-Insert.prototype.getPage = getPage;
-Insert.prototype.addListener = addListener;
+
+Insert.prototype.tapd = tapd;
+
 var insert = new Insert();
 insert.setTimer();

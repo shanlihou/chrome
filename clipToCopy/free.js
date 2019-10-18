@@ -1,5 +1,3 @@
-
-
 function Insert(){
     this.buttonAdd = false;
     this.inputAdd = false;
@@ -105,6 +103,17 @@ function tapd() {
     let tbody = tbss.querySelector('tbody');
     if (!tbody)
         return;
+    
+    let trRow = tbss.querySelector('tr');
+    let th3 = trRow.childNodes[3].innerHTML;
+    let th4 = trRow.childNodes[4].innerHTML;
+    console.log(th3, th4);
+    let pwdIndex = 3;
+    let methodIndex = 4;
+    if (th3 == 'Method') {
+        pwdIndex = 4;
+        methodIndex = 3
+    }
 
     let trs = tbody.querySelectorAll('tr');
     let jsonObj = [];
@@ -113,8 +122,8 @@ function tapd() {
         let tds = tr.querySelectorAll('td');
         let ip = tds[1].innerHTML;
         let port = tds[2].innerHTML;
-        let pwd = tds[4].innerHTML;
-        let method = tds[3].innerHTML;
+        let pwd = tds[pwdIndex].innerHTML;
+        let method = tds[methodIndex].innerHTML;
         let remark = ip + '-' + tds[6].innerHTML;
         console.log(tds, ip);
         jsonObj.push({

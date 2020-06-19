@@ -59,8 +59,12 @@
             "js":["tapd.js"]   
 		},
 		{
-			"matches": ["*://free-ss.site/*", "*://free-ss.co/*"],
+			"matches": ["*://free-ss.site/*", "*://free-ss.co/*", "*://free-ss.best/*"],
             "js":["free.js"]   
+		},
+		{
+			"matches": ["*://www.youneed.win/*"],
+            "js":["youneed.js"]   
 		}  
     ],
 

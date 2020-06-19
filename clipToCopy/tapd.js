@@ -104,14 +104,25 @@ function tapd() {
     for (child of children) {
         let aList = child.querySelectorAll('a');
         let state = '';
+        let isRemove = false;
         for (a of aList) {
             if (a.getAttribute('id'))
             {
-                console.log(a.innerHTML);
-                if (a.innerHTML == "已解决" || a.innerHTML == "已实现" || a.innerHTML == "验证中" || a.innerHTML == "测试中") {
+                if (a.innerHTML == "已解决" || a.innerHTML == "已实现" || a.innerHTML == "验证中" || a.innerHTML == "测试中" || a.innerHTML == "待测试" || a.innerHTML == "待验收") {
                     body.removeChild(child);
+                    isRemove = true;
+                    break;
                 }
             }
+        }
+        if (isRemove) {
+            continue;
+        }
+
+        let gt = child.querySelector("div.growing-title");
+        let b = gt.querySelector('a');
+        if (b.innerHTML.indexOf("功能点") > 0) {
+            body.removeChild(child);
         }
     }
 }

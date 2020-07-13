@@ -10,9 +10,9 @@
 var get_link = () => {
 
 	const    parentNode =   document.querySelector('.context');
-	const referenceNode = parentNode.querySelector(':scope > div');
-	const      table = referenceNode.querySelector(':scope > table:only-child');
-    console.log("tm");
+	const referenceNode = parentNode.querySelectorAll(':scope > div');
+	const      table = referenceNode[1].querySelector(':scope > table:only-child');
+    console.log("tm", parentNode, referenceNode, table);
 	if (!table) return false;
 
     const arraySelector = (
@@ -126,7 +126,7 @@ var get_link = () => {
 	newNode.appendChild(pre);
 	newNode.appendChild(button);
 
-	parentNode.insertBefore(newNode, referenceNode);
+	parentNode.insertBefore(newNode, referenceNode[1]);
 
 };
 
